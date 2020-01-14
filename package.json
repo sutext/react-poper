@@ -1,6 +1,6 @@
 {
     "name": "react-poper",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "React Modal resolver",
     "main": "index.js",
     "scripts": {

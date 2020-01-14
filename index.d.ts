@@ -53,13 +53,13 @@ export interface ModalType<P extends ModalProps = ModalProps, S = React.Componen
  */
 export declare abstract class Modal<P extends ModalProps = ModalProps, S = React.ComponentState> extends React.Component<P, S> {
     /** allow mask tap or not @default true */
-    protected static readonly masktap: boolean;
+    static readonly masktap: boolean;
     /** only one can be show whit same kind or not @default true  */
-    protected static readonly onlyone: boolean;
+    static readonly onlyone: boolean;
     /** dimming rate of this kind modal @default -1 */
-    protected static readonly dimming: number;
+    static readonly dimming: number;
     /** fade-out mode of this kind modal when dismiss @param all fade-out all content @param mask fade-out only mask @default all */
-    protected static readonly fademode: 'all' | 'mask';
+    static readonly fademode: 'all' | 'mask';
     /** dismiss modal itself @param finish animation finished */
     public readonly dismiss: (finish?: () => void) => void;
     /** trigger when present animation begin */
