@@ -118,6 +118,7 @@ export declare class Poper {
     public readonly dismiss: (indexOrMeta?: number | ModalType | undefined, finish?: (() => void) | undefined) => void;
     /**
      * @description present an Remind Modal
+     * @warn Remind Modal Component Class must be configed
      * @param msg message of RemindProps
      * @param title title of RemindProps
      * @param duration keep duration orf RemindProps @default 1s
@@ -125,13 +126,18 @@ export declare class Poper {
     public readonly remind: (msg: string, title?: string | undefined, duration?: number | undefined) => void;
     /**
      * @description present an Alert Modal
+     * @warn Alert Modal Component Class must be configed
      * @param msgOrProps message of AlertProps or AlertProps
      */
     public readonly alert: (msgOrProps: string | AlertProps) => void;
-    /** @description remind error */
+    /**
+     * @description remind error
+     * @warn Remind Modal Component Class must be configed
+     */
     public readonly error: (error?: any) => void;
     /**
      * @description presnet Wait Modal
+     * @warn Wait Modal Component Class must be configed
      * @param msg message of WaitProps
      * @param timeout timeout of WaitProps @default 20s
      */

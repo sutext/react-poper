@@ -47,16 +47,14 @@ var react_dom_1 = __importDefault(require('react-dom'));
 if (!react_1 || !react_dom_1) {
     throw new Error('react-poper must can only work in react project');
 }
-exports.Context = react_1.default.createContext({});
-var Modal = /** @class */ (function(_super) {
+const Context = react_1.default.createContext({});
+var Modal = (function(_super) {
     __extends(Modal, _super);
     function Modal() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
-        _this.context = {};
         _this.dismiss = function(finish) {
-            var _b;
             if (typeof _this.props.index === 'number') {
-                (_b = _this.context.pop) === null || _b === void 0 ? void 0 : _b.dismiss(_this.props.index, finish);
+                _this.context.pop && _this.context.pop.dismiss(_this.props.index, finish);
             }
         };
         return _this;
@@ -72,7 +70,7 @@ var Modal = /** @class */ (function(_super) {
     Modal.onlyone = true;
     Modal.dimming = -1;
     Modal.fademode = 'all';
-    Modal.contextType = exports.Context;
+    Modal.contextType = Context;
     return Modal;
 })(react_1.default.Component);
 exports.Modal = Modal;
@@ -200,37 +198,34 @@ var Wrapper = /** @class */ (function(_super) {
     Wrapper.prototype.hide = function() {
         var _this = this;
         return new Promise(function(reslove) {
-            var _b;
-            if (_this.state.display) {
-                (_b = _this.modal) === null || _b === void 0 ? void 0 : _b.modalWillHide();
-                _this.onhide = reslove;
-                setTimeout(function() {
-                    return _this.setState({ display: false });
-                });
-            } else {
+            if (_this.onhide || !_this.state.display) {
                 reslove();
+                return;
             }
+            _this.onhide = reslove;
+            setTimeout(function() {
+                _this.modal && _this.modal.modalWillHide && _this.modal.modalWillHide();
+                return _this.setState({ display: false });
+            });
         });
     };
     Wrapper.prototype.show = function() {
         var _this = this;
         return new Promise(function(reslove) {
-            var _b;
-            if (!_this.state.display) {
-                (_b = _this.modal) === null || _b === void 0 ? void 0 : _b.modalWillShow();
-                _this.onshow = reslove;
-                setTimeout(function() {
-                    return _this.setState({ display: true });
-                });
-            } else {
+            if (_this.onshow || _this.state.display) {
                 reslove();
+                return;
             }
+            _this.onshow = reslove;
+            setTimeout(function() {
+                _this.modal && _this.modal.modalWillShow && _this.modal.modalWillShow();
+                return _this.setState({ display: true });
+            });
         });
     };
     Wrapper.prototype.onClick = function() {
-        var _b;
         if (this.props.meta.masktap) {
-            (_b = this.modal) === null || _b === void 0 ? void 0 : _b.modalTapMask();
+            this.modal && this.modal.modalTapMask && this.modal.modalTapMask();
         }
     };
     Wrapper.prototype.render = function() {
@@ -284,7 +279,7 @@ var Wrapper = /** @class */ (function(_super) {
             ),
         );
     };
-    Wrapper.contextType = exports.Context;
+    Wrapper.contextType = Context;
     return Wrapper;
 })(react_1.default.Component);
 var Poper = /** @class */ (function() {
@@ -343,7 +338,7 @@ var Poper = /** @class */ (function() {
         });
         document.body.append(this.root);
         var dom = react_1.default.createElement(
-            exports.Context.Provider,
+            Context.Provider,
             { value: { pop: this } },
             react_1.default.createElement(Container, {
                 ref: function(ins) {
@@ -410,10 +405,6 @@ var Poper = /** @class */ (function() {
     };
     Poper.prototype._remove = function(meta, finish) {
         var _this = this;
-        if (meta === void 0) {
-            this._clear(finish);
-            return;
-        }
         var block = function() {
             if (finish) {
                 finish();
@@ -421,10 +412,15 @@ var Poper = /** @class */ (function() {
             _this.current = undefined;
             _this.next();
         };
-        if (typeof meta === 'number') {
-            this.container.delIndex(meta, block);
-        } else {
-            this.container.delModal(meta, block);
+        switch (typeof meta) {
+            case 'number':
+                this.container.delIndex(meta, block);
+                break;
+            case 'function':
+                this.container.delModal(meta, block);
+            default:
+                this._clear(finish);
+                break;
         }
     };
     return Poper;
