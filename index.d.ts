@@ -56,24 +56,24 @@ export declare abstract class Modal<P extends ModalProps = ModalProps, S = React
     protected static readonly masktap: boolean;
     /** only one can be show whit same kind or not @default true  */
     protected static readonly onlyone: boolean;
-    /** dimming rate of this kind modal */
+    /** dimming rate of this kind modal @default -1 */
     protected static readonly dimming: number;
-    /** fade-out mode of this kind modal when dismiss @param all fade-out all content @param mask fade-out only mask */
+    /** fade-out mode of this kind modal when dismiss @param all fade-out all content @param mask fade-out only mask @default all */
     protected static readonly fademode: 'all' | 'mask';
     /** dismiss modal itself @param finish animation finished */
-    public readonly dismiss: (finish?: (() => void) | undefined) => void;
-    /** present animation begin */
+    public readonly dismiss: (finish?: () => void) => void;
+    /** trigger when present animation begin */
     protected modalWillShow(): void;
-    /** dismiss animation begin */
+    /** trigger when dismiss animation begin */
     protected modalWillHide(): void;
-    /** present animation finished */
+    /** trigger when present animation finished */
     protected modalDidShow(): void;
-    /** dismiss animation finished */
+    /** trigger when dismiss animation finished */
     protected modalDidHide(): void;
-    /** mask have been taped */
+    /** trigger when mask have been taped */
     protected modalTapMask(): void;
 }
-interface PoperConfig {
+export interface PoperConfig {
     /** implements Component for this.wait() @default undefined */
     readonly Wait?: ModalType<WaitProps>;
     /** implements Component for this.alert() @default undefined */
@@ -82,7 +82,7 @@ interface PoperConfig {
     readonly Remind?: ModalType<RemindProps>;
     /** defalut error message for unknown Error @default 'System Error' */
     readonly errmsg?: string;
-    /** defalut dimming rate for all Modal @default 0.4 */
+    /** dimming rate for all Modal @default 0.4 */
     readonly dimming?: number;
 }
 /**
