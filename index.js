@@ -47,7 +47,7 @@ var react_dom_1 = __importDefault(require('react-dom'));
 if (!react_1 || !react_dom_1) {
     throw new Error('react-poper must can only work in react project');
 }
-const Context = react_1.default.createContext({});
+var Context = react_1.default.createContext({});
 var Modal = (function(_super) {
     __extends(Modal, _super);
     function Modal() {
@@ -66,7 +66,7 @@ var Modal = (function(_super) {
     Modal.prototype.modalTapMask = function() {
         this.dismiss();
     };
-    Modal.masktap = true;
+    Modal.masktap = false;
     Modal.onlyone = true;
     Modal.dimming = -1;
     Modal.fademode = 'all';
@@ -101,10 +101,11 @@ var Container = /** @class */ (function(_super) {
         }
         var modals = this.state.modals.concat();
         var index = modals.push({ metaProps: metaProps, meta: meta }) - 1;
-        this.setState({ modals: modals }, function() {
+        this.setState({ modals: modals });
+        setTimeout(function() {
             var ins = _this.refs[index];
             ins.show().then(finish);
-        });
+        }, 17);
     };
     Container.prototype.delModal = function(meta, finish) {
         var _this = this;
@@ -125,22 +126,22 @@ var Container = /** @class */ (function(_super) {
             finish();
         }
     };
-    Container.prototype.delIndex = function(index, onhide) {
+    Container.prototype.delIndex = function(index, finish) {
         var _this = this;
         var ins = this.refs[index + ''];
         if (ins) {
             ins.hide().then(function() {
                 var modals = _this.state.modals.concat();
                 modals.splice(index, 1);
-                _this.setState({ modals: modals }, onhide);
+                _this.setState({ modals: modals }, finish);
             });
         } else {
-            onhide();
+            finish();
         }
-        onhide();
+        finish();
     };
-    Container.prototype.clear = function() {
-        this.setState({ modals: [] });
+    Container.prototype.clear = function(finish) {
+        this.setState({ modals: [] }, finish);
     };
     Container.prototype.render = function() {
         return this.state.modals.map(function(prop, idx) {
@@ -153,74 +154,48 @@ var Wrapper = /** @class */ (function(_super) {
     __extends(Wrapper, _super);
     function Wrapper() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
-        _this.state = { display: undefined };
+        _this.state = { display: false };
         _this.modal = null;
         return _this;
     }
-    Wrapper.prototype.onAniFinish = function(event) {
-        if (event.propertyName == 'background-color' && this.state.display) {
-            if (this.state.display) {
-                if (this.onshow) {
-                    this.onshow();
-                    this.onshow = undefined;
-                    if (this.modal) {
-                        if (this.modal.props.onshow) {
-                            this.modal.props.onshow();
-                        }
-                        this.modal.modalDidShow();
-                    }
-                }
-            } else {
-                if (this.onhide) {
-                    this.onhide();
-                    this.onhide = undefined;
-                    if (this.modal) {
-                        if (this.modal.props.onhide) {
-                            this.modal.props.onhide();
-                        }
-                        this.modal.modalDidHide();
-                    }
-                }
-            }
-        } else if (event.propertyName == 'opacity' && !this.state.display) {
-            if (this.onhide) {
-                this.onhide();
-                this.onhide = undefined;
-                if (this.modal) {
-                    if (this.modal.props.onhide) {
-                        this.modal.props.onhide();
-                    }
-                    this.modal.modalDidHide();
-                }
-            }
-        }
-    };
     Wrapper.prototype.hide = function() {
         var _this = this;
         return new Promise(function(reslove) {
-            if (_this.onhide || !_this.state.display) {
+            if (!_this.state.display) {
                 reslove();
                 return;
             }
-            _this.onhide = reslove;
+            _this.modal && _this.modal.modalWillHide && _this.modal.modalWillHide();
+            _this.setState({ display: false });
             setTimeout(function() {
-                _this.modal && _this.modal.modalWillHide && _this.modal.modalWillHide();
-                return _this.setState({ display: false });
-            });
+                if (_this.modal) {
+                    if (_this.modal.props.onhide) {
+                        _this.modal.props.onhide();
+                    }
+                    _this.modal.modalDidHide();
+                }
+                reslove();
+            }, _this.context.pop.fadedur * 1000);
         });
     };
     Wrapper.prototype.show = function() {
         var _this = this;
         return new Promise(function(reslove) {
-            if (_this.onshow || _this.state.display) {
+            if (_this.state.display) {
                 reslove();
                 return;
             }
-            _this.onshow = reslove;
+            _this.setState({ display: true });
+            _this.modal && _this.modal.modalWillShow && _this.modal.modalWillShow();
             setTimeout(function() {
-                _this.modal && _this.modal.modalWillShow && _this.modal.modalWillShow();
-                return _this.setState({ display: true });
-            });
+                if (_this.modal) {
+                    if (_this.modal.props.onshow) {
+                        _this.modal.props.onshow();
+                    }
+                    _this.modal.modalDidShow();
+                }
+                reslove();
+            }, _this.context.pop.fadedur * 1000);
         });
     };
     Wrapper.prototype.onClick = function() {
@@ -234,40 +209,45 @@ var Wrapper = /** @class */ (function(_super) {
         var props = this.props.metaProps;
         var alpha = Meta.dimming < 0 ? this.context.pop.dimming : Meta.dimming;
         var opacity = 1;
-        var color = 'rgba(0,0,0,' + alpha + ')';
-        if (this.state.display === undefined) {
-            color = 'rgba(0,0,0,0)';
-        } else if (this.state.display === false) {
+        var bgopacity = 1;
+        if (!this.state.display) {
             if (Meta.fademode === 'mask') {
-                color = 'rgba(0,0,0,0)';
+                bgopacity = 0;
             } else {
                 opacity = 0;
             }
         }
         var style = {
             position: 'fixed',
+            top: '0',
+            left: '0',
             width: '100%',
             height: '100%',
             display: 'flex',
-            transition: 'all 0.3s linear',
+            transition: 'all ' + this.context.pop.fadedur + 's linear',
             alignItems: 'center',
             justifyContent: 'center',
+            opacity: opacity,
+        };
+        var bgstyle = {
+            position: 'absolute',
             top: '0',
             left: '0',
-            opacity: opacity,
-            backgroundColor: color,
+            width: '100%',
+            height: '100%',
+            transition: 'all ' + this.context.pop.fadedur + 's linear',
+            backgroundColor: 'rgba(0,0,0,' + alpha + ')',
+            opacity: bgopacity,
         };
         return react_1.default.createElement(
             'div',
-            {
-                style: style,
-                onTransitionEnd: function(evt) {
-                    return _this.onAniFinish(evt);
-                },
+            { style: style },
+            react_1.default.createElement('div', {
+                style: bgstyle,
                 onClick: function() {
-                    return _this.onClick();
+                    _this.onClick();
                 },
-            },
+            }),
             react_1.default.createElement(
                 Meta,
                 __assign({}, props, {
@@ -288,13 +268,15 @@ var Poper = /** @class */ (function() {
         this.opqueue = [];
         this.container = null;
         if (config) {
-            this.dimming = config.dimming || 0.4;
-            this.errmsg = config.dimming || 'System Error!';
+            this.dimming = config.dimming > 0 ? config.dimming : 0.4;
+            this.fadedur = config.fadedur > 0 ? config.fadedur : 0.3;
+            this.errmsg = config.errmsg || 'System Error!';
             this.Alert = config.Alert;
             this.Wait = config.Wait;
             this.Remind = config.Remind;
         } else {
             this.dimming = 0.4;
+            this.fadedur = 0.3;
             this.errmsg = 'System Error!';
         }
         this.dismiss = function(meta, finish) {
@@ -331,11 +313,8 @@ var Poper = /** @class */ (function() {
         };
         var div = document.createElement('div');
         var style = div.style;
-        style.transition = 'opacity 0.3s linear';
+        style.transition = 'opacity ' + this.fadedur + 's linear';
         this.root = div;
-        div.addEventListener('transitionend', function(evt) {
-            return _this.onAniFinish(evt);
-        });
         document.body.append(this.root);
         var dom = react_1.default.createElement(
             Context.Provider,
@@ -351,15 +330,6 @@ var Poper = /** @class */ (function() {
     Poper.prototype.present = function(meta, props) {
         if (this.container) {
             this.add({ type: 'present', meta: meta, props: props });
-        }
-    };
-    Poper.prototype.onAniFinish = function(event) {
-        if (event.propertyName === 'opacity' && this.root.style.opacity == '0') {
-            if (this.clearFinish) {
-                this.clearFinish();
-                this.root.style.opacity = '1';
-                this.clearFinish = undefined;
-            }
         }
     };
     Poper.prototype.add = function(op) {
@@ -392,16 +362,18 @@ var Poper = /** @class */ (function() {
         });
     };
     Poper.prototype._clear = function(finish) {
+        if (this.root.style.opacity == '0') {
+            finish();
+            return;
+        }
         var _this = this;
         this.root.style.opacity = '0';
-        this.clearFinish = function() {
-            _this.container.clear();
-            if (finish) {
+        setTimeout(function() {
+            _this.container.clear(function() {
+                _this.root.style.opacity = '1';
                 finish();
-            }
-            _this.current = undefined;
-            _this.next();
-        };
+            });
+        }, this.fadedur * 1000);
     };
     Poper.prototype._remove = function(meta, finish) {
         var _this = this;
@@ -412,15 +384,22 @@ var Poper = /** @class */ (function() {
             _this.current = undefined;
             _this.next();
         };
-        switch (typeof meta) {
-            case 'number':
-                this.container.delIndex(meta, block);
-                break;
-            case 'function':
-                this.container.delModal(meta, block);
-            default:
-                this._clear(finish);
-                break;
+        if (_this.container.count < 1) {
+            block();
+        } else if (_this.container.count == 1) {
+            this._clear(block);
+        } else {
+            switch (typeof meta) {
+                case 'number':
+                    this.container.delIndex(meta, block);
+                    break;
+                case 'function':
+                    this.container.delModal(meta, block);
+                    break;
+                default:
+                    this._clear(block);
+                    break;
+            }
         }
     };
     return Poper;

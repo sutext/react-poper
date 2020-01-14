@@ -52,13 +52,13 @@ export interface ModalType<P extends ModalProps = ModalProps, S = React.Componen
  * @notice subclass can overwride some settings
  */
 export declare abstract class Modal<P extends ModalProps = ModalProps, S = React.ComponentState> extends React.Component<P, S> {
-    /** allow mask tap or not @default true */
+    /** allow mask tap or not @default false */
     static readonly masktap: boolean;
-    /** only one can be show whit same kind or not @default true  */
+    /** show only one of same Modal or not @default true  */
     static readonly onlyone: boolean;
-    /** dimming rate of this kind modal @default -1 */
+    /** dimming rate of same Modal  @default -1 */
     static readonly dimming: number;
-    /** fade-out mode of this kind modal when dismiss @param all fade-out all content @param mask fade-out only mask @default all */
+    /** fade mode of same Modal @param all fade all content @param mask fade mask only @default all */
     static readonly fademode: 'all' | 'mask';
     /** dismiss modal itself @param finish animation finished */
     public readonly dismiss: (finish?: () => void) => void;
@@ -82,6 +82,8 @@ export interface PoperConfig {
     readonly Remind?: ModalType<RemindProps>;
     /** defalut error message for unknown Error @default 'System Error' */
     readonly errmsg?: string;
+    /** fade-in-out animation time-func duration  @default 0.3 @unit s*/
+    readonly fadedur?: number;
     /** dimming rate for all Modal @default 0.4 */
     readonly dimming?: number;
 }
