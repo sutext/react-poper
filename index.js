@@ -114,9 +114,7 @@ var Alert = /** @class */ (function(_super) {
                     className: 'rp-alert-btn',
                     style: { color: theme || '#fea310' },
                     onClick: function() {
-                        setTimeout(() => {
-                            return _this.dismiss(confirmBlock);
-                        }, 200);
+                        _this.dismiss(confirmBlock);
                     },
                 },
                 confirmText,
@@ -140,9 +138,7 @@ var Alert = /** @class */ (function(_super) {
                         key: '2',
                         className: 'rp-alert-btn rp-alert-cancel',
                         onClick: function() {
-                            setTimeout(() => {
-                                return _this.dismiss(cancelBlock);
-                            }, 200);
+                            _this.dismiss(cancelBlock);
                         },
                     },
                     cancelText,
@@ -229,7 +225,9 @@ var Container = /** @class */ (function(_super) {
     }
     Object.defineProperty(Container.prototype, 'count', {
         get: function() {
-            return this.state.modals.length;
+            return this.state.modals.filter(function(ele) {
+                return !ele.removed;
+            }).length;
         },
         enumerable: true,
         configurable: true,
@@ -238,7 +236,7 @@ var Container = /** @class */ (function(_super) {
         var _this = this;
         if (meta.onlyone) {
             var index_1 = this.state.modals.findIndex(function(ele) {
-                return ele.meta === meta;
+                return ele.meta === meta && !ele.removed;
             });
             if (index_1 >= 0) {
                 finish();
@@ -254,20 +252,18 @@ var Container = /** @class */ (function(_super) {
         }, 17);
     };
     Container.prototype.delModal = function(meta, finish) {
-        var _this = this;
-        var modals = this.state.modals.concat();
+        var modals = this.state.modals;
         var promises = [];
         for (var index = modals.length - 1; index >= 0; index--) {
-            if (modals[index].meta === meta) {
+            var ele = modals[index];
+            if (ele.meta === meta) {
+                ele.removed = true;
                 var ins = this.refs[index];
                 promises.push(ins.hide());
-                modals.splice(index, 1);
             }
         }
         if (promises.length > 0) {
-            Promise.all(promises).then(function() {
-                _this.setState({ modals: modals }, finish);
-            });
+            Promise.all(promises).then(finish);
         } else {
             finish();
         }
@@ -276,11 +272,8 @@ var Container = /** @class */ (function(_super) {
         var _this = this;
         var ins = this.refs[index + ''];
         if (ins) {
-            ins.hide().then(function() {
-                var modals = _this.state.modals.concat();
-                modals.splice(index, 1);
-                _this.setState({ modals: modals }, finish);
-            });
+            _this.state.modals[index].removed = true;
+            ins.hide().then(finish);
         } else {
             finish();
         }
@@ -300,14 +293,14 @@ var Wrapper = /** @class */ (function(_super) {
     __extends(Wrapper, _super);
     function Wrapper() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
-        _this.state = { display: false };
+        _this.state = { display: false, removed: _this.props.removed };
         _this.modal = null;
         return _this;
     }
     Wrapper.prototype.hide = function() {
         var _this = this;
         return new Promise(function(reslove) {
-            if (!_this.state.display) {
+            if (_this.state.removed || !_this.state.display) {
                 reslove();
                 return;
             }
@@ -320,6 +313,8 @@ var Wrapper = /** @class */ (function(_super) {
                     }
                     _this.modal.modalDidHide();
                 }
+                _this.modal = undefined;
+                _this.setState({ removed: true });
                 reslove();
             }, _this.context.pop.fadedur * 1000);
         });
@@ -327,7 +322,7 @@ var Wrapper = /** @class */ (function(_super) {
     Wrapper.prototype.show = function() {
         var _this = this;
         return new Promise(function(reslove) {
-            if (_this.state.display) {
+            if (_this.state.removed || _this.state.display) {
                 reslove();
                 return;
             }
@@ -350,6 +345,9 @@ var Wrapper = /** @class */ (function(_super) {
         }
     };
     Wrapper.prototype.render = function() {
+        if (this.state.removed) {
+            return react_1.default.createElement('div', { style: { display: 'none' } });
+        }
         var _this = this;
         var Meta = this.props.meta;
         var props = this.props.metaProps || {};
@@ -383,8 +381,8 @@ var Wrapper = /** @class */ (function(_super) {
             react_1.default.createElement('div', {
                 style: bgstyle,
                 className: 'rp-modal-mask',
-                onClick: function() {
-                    _this.onClick();
+                onClick: function(e) {
+                    _this.onClick(e);
                 },
             }),
             react_1.default.createElement(
@@ -392,7 +390,7 @@ var Wrapper = /** @class */ (function(_super) {
                 __assign({}, props, {
                     index: this.props.index,
                     ref: function(ins) {
-                        return (_this.modal = ins);
+                        _this.modal = ins;
                     },
                 }),
             ),
