@@ -354,24 +354,23 @@ var Wrapper = /** @class */ (function(_super) {
         var Meta = this.props.meta;
         var props = this.props.metaProps || {};
         var alpha = Meta.dimming < 0 ? this.context.pop.dimming : Meta.dimming;
-        var opacity = 1;
-        var bgopacity = 1;
+        var style = { opacity: 1 };
+        var bgstyle = { opacity: 1 };
+        var dur = this.context.pop.fadedur;
+        var priority = props.priority || (Meta.defaultProps && Meta.defaultProps.priority);
         if (!this.state.display) {
             if (Meta.fademode === 'mask') {
-                bgopacity = 0;
+                bgstyle.opacity = 0;
             } else {
-                opacity = 0;
+                style.opacity = 0;
             }
         }
-        var dur = this.context.pop.fadedur;
-        var style = { opacity: opacity };
         if (dur != 0.3) {
             style.transitionDuration = dur + 's';
         }
-        if (props.priority) {
-            style.zIndex = props.priority;
+        if (priority) {
+            style.zIndex = priority;
         }
-        var bgstyle = { opacity: bgopacity };
         if (alpha != 0.4) {
             bgstyle.backgroundColor = 'rgba(0,0,0,' + alpha + ')';
         }
