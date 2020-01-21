@@ -1,6 +1,6 @@
 {
     "name": "react-poper",
-    "version": "1.0.4",
+    "version": "1.0.6",
     "description": "React Modal resolver",
     "main": "index.js",
     "scripts": {
@@ -14,6 +14,11 @@
         "react",
         "modal",
         "poper"
+    ],
+    "files": [
+        "index.js",
+        "index.d.ts",
+        "poper.css"
     ],
     "author": "supertext@icloud.com",
     "license": "ISC",

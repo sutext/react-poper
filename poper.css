@@ -1,0 +1,165 @@
+:global(.rp-entry-root) {
+    transition: opacity 0.3s linear 0s;
+}
+:global(.rp-modal-root) {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    transition: all 0.3s linear 0s;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+:global(.rp-modal-mask) {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s linear 0s;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 1;
+}
+:global(.rp-box-all) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 17px;
+    box-sizing: border-box;
+}
+:global(.rp-box-alert) {
+    position: relative;
+    overflow: hidden;
+    width: 270px;
+    background-color: white;
+    transition: all 0.25s cubic-bezier(0.76, 2.07, 0.63, 0.68);
+    color: #333;
+}
+:global(.rp-alert-title) {
+    font-size: 17px;
+    color: black;
+    line-height: 40px;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+:global(.rp-alert-body) {
+    font-size: 15px;
+    text-align: center;
+    color: #555;
+    line-height: 20px;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+    max-height: 200px;
+    overflow: scroll;
+    margin-bottom: 15px;
+}
+:global(.rp-alert-btns) {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #eee;
+}
+:global(.rp-alert-btn) {
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    font-size: 18px;
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    flex: 1 0 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+:global(.rp-alert-cancel) {
+    color: #888;
+}
+:global(.rp-alert-btn:active) {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+:global(.rp-box-remind) {
+    width: 200px;
+    min-height: 80px;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 15px 15px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 20px;
+    color: white;
+}
+:global(.rp-box-wait) {
+    width: 120px;
+    min-height: 80px;
+}
+:global(.rp-wait-light) {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+:global(.rp-wait-dark) {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+:global(.rp-wait-text) {
+    font-size: 14px;
+    margin-top: 8px;
+    padding: 0 15px;
+    box-sizing: border-box;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    text-decoration: none;
+}
+
+:global(.rp-wait-icon) {
+    position: relative;
+    width: 25px;
+    height: 25px;
+}
+
+:global(.rp-wait-icon-item) {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: rotate(calc(var(--idx) * 30deg));
+}
+:global(.rp-wait-icon-item::before) {
+    content: '';
+    display: block;
+    margin: 0 auto;
+    width: 2px;
+    height: 20%;
+    animation: rp-wait-icon-fade 1.2s infinite ease-in-out calc(var(--idx) * 0.1s) both;
+}
+:global(.rp-wait-light .rp-wait-icon-item::before) {
+    background-color: black;
+}
+:global(.rp-wait-dark .rp-wait-icon-item::before) {
+    background-color: white;
+}
+@keyframes rp-wait-icon-fade {
+    0%,
+    39%,
+    100% {
+        opacity: 0.2;
+    }
+    40% {
+        opacity: 1;
+    }
+}

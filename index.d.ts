@@ -8,33 +8,45 @@ export declare type AlertAction =
     | (() => void);
 export interface ModalProps {
     /** dismiss callback */
-    readonly onhide?: () => void;
+    onhide?: () => void;
     /** present callback */
-    readonly onshow?: () => void;
+    onshow?: () => void;
+    /** the priority of modal means z-index */
+    priority?: number;
 }
 export interface AlertProps extends ModalProps {
     /** alert title */
-    readonly title?: string;
+    title?: string;
+    /** a css color string use for alert btn etc*/
+    theme?: string;
     /** cancel action */
-    readonly cancel?: AlertAction;
+    cancel?: AlertAction;
     /** cancel action */
-    readonly confirm?: AlertAction;
+    confirm?: AlertAction;
     /** alert message */
-    readonly message?: string;
+    message?: string;
+    /** the priority of modal means z-index @default 1000*/
+    priority?: number;
 }
 export interface WaitProps extends ModalProps {
+    /** preset wait theme */
+    theme?: 'dark' | 'light';
     /** waiting timeout @default 20s */
-    readonly timeout: number;
+    timeout?: number;
     /** waiting message */
-    readonly message?: string;
+    message?: string;
+    /** the priority of modal means z-index @default 1002*/
+    priority?: number;
 }
 export interface RemindProps extends ModalProps {
     /** remind title */
-    readonly title?: string;
+    title?: string;
     /** remind message */
-    readonly message?: string;
-    /** keep duration */
-    readonly duration: number;
+    message?: string;
+    /** keep duration @default 1 @unit s */
+    duration?: number;
+    /** the priority of modal means z-index @default 1001*/
+    priority?: number;
 }
 export interface ModalType<P extends ModalProps = ModalProps, S = React.ComponentState> extends React.ComponentClass<P, S> {
     new (props: P, context?: any): Modal<P, S>;
@@ -73,12 +85,21 @@ export declare abstract class Modal<P extends ModalProps = ModalProps, S = React
     /** trigger when mask have been taped */
     protected modalTapMask(): void;
 }
+export class Wait extends Modal<WaitProps> {
+    static defaultProps: Partial<WaitProps>;
+}
+export class Alert extends Modal<AlertProps> {
+    static defaultProps: Partial<AlertProps>;
+}
+export class Remind extends Modal<RemindProps> {
+    static defaultProps: Partial<RemindProps>;
+}
 export interface PoperConfig {
-    /** implements Component for this.wait() @default undefined */
+    /** implements Component for Poper.wait @default Wait */
     readonly Wait?: ModalType<WaitProps>;
-    /** implements Component for this.alert() @default undefined */
+    /** implements Component for Poper.alert @default Alert */
     readonly Alert?: ModalType<AlertProps>;
-    /** implements Component for this.remind() @default undefined */
+    /** implements Component for Poper.remind @default Remind */
     readonly Remind?: ModalType<RemindProps>;
     /** defalut error message for unknown Error @default 'System Error' */
     readonly errmsg?: string;
@@ -93,9 +114,16 @@ export interface PoperConfig {
  * ```
  * import React from 'react';
  * import { Modal, Poper, AlertProps, RemindProps, WaitProps } from 'react-poper';
- * class Alert extends Modal<AlertProps> {}
- * class Remind extends Modal<RemindProps> {}
- * class Wait extends Modal<WaitProps> {}
+ * class Alert extends Modal<AlertProps> {
+ *     static readonly onlyone = false;
+ * }
+ * class Remind extends Modal<RemindProps> {
+ *     static readonly dimming = 0;
+ * }
+ * class Wait extends Modal<WaitProps> {
+ *     static readonly dimming = 0;
+ *     static readonly masktap = true;
+ * }
  * export const pop = new Poper({
  *    errmsg: 'System Error',
  *    Alert: Alert,
@@ -106,44 +134,47 @@ export interface PoperConfig {
  * ```
  */
 export declare class Poper {
+    /** defalut error message for unknown Error @default 'System Error' */
+    public readonly errmsg: string;
+    /** fade-in-out animation time-func duration  @default 0.3 @unit s*/
+    public readonly fadedur: number;
+    /** dimming rate for all Modal @default 0.4 */
+    public readonly dimming: number;
     /**
      * @description show a Modal Component
      * @param meta Modal Component class for modal
      * @param props Modal Component props
      */
-    public readonly present: (meta: ModalType, props?: ModalProps) => void;
+    public readonly present: <P extends ModalProps>(meta: ModalType<P>, props?: P) => void;
     /**
      * @description dismiss some presented modal
-     * @param indexOrMeta the index in modal stack or  Modal Component class
+     * @param indexOrMeta the index in modal stack or  Modal Component class if undefined means dismiss all.
      * @param finish callback when animation finished
      */
     public readonly dismiss: (indexOrMeta?: number | ModalType | undefined, finish?: (() => void) | undefined) => void;
     /**
-     * @description present an Remind Modal
+     * @description present an auto dismiss Modal after duration
      * @warn Remind Modal Component Class must be configed
-     * @param msg message of RemindProps
-     * @param title title of RemindProps
-     * @param duration keep duration orf RemindProps @default 1s
+     * @param msgOrProps message of RemindProps or RemindProps
      */
-    public readonly remind: (msg: string, title?: string | undefined, duration?: number | undefined) => void;
+    public readonly remind: (msgOrProps: string | RemindProps) => void;
     /**
-     * @description present an Alert Modal
+     * @description present an dialog Modal with one or two selection
      * @warn Alert Modal Component Class must be configed
      * @param msgOrProps message of AlertProps or AlertProps
      */
     public readonly alert: (msgOrProps: string | AlertProps) => void;
     /**
-     * @description remind error
+     * @description remind error remind(error.message || config.errmsg)
      * @warn Remind Modal Component Class must be configed
      */
     public readonly error: (error?: any) => void;
     /**
-     * @description presnet Wait Modal
+     * @description presnet a loading Modal
      * @warn Wait Modal Component Class must be configed
-     * @param msg message of WaitProps
-     * @param timeout timeout of WaitProps @default 20s
+     * @param msgOrProps message of WaitProps or WaitProps
      */
-    public readonly wait: (msg?: string | undefined, timeout?: number) => void;
+    public readonly wait: (msgOrProps?: string | WaitProps) => void;
     /** dismiss Wait modal */
     public readonly idle: () => void;
     /** designed constructor */
