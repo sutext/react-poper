@@ -218,7 +218,7 @@ var Wait = /** @class */ (function(_super) {
     Wait.masktap = true;
     return Wait;
 })(Modal);
-Wait.defaultProps = { priority: 1001, timeout: 20 };
+Wait.defaultProps = { priority: 1002, timeout: 20 };
 exports.Wait = Wait;
 var Container = /** @class */ (function(_super) {
     __extends(Container, _super);
