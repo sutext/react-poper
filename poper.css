@@ -44,6 +44,7 @@
     font-size: 17px;
     color: black;
     line-height: 40px;
+    min-width: 30px;
     width: 100%;
     padding: 0 15px;
     box-sizing: border-box;
@@ -62,7 +63,7 @@
     box-sizing: border-box;
     max-height: 200px;
     overflow: scroll;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 :global(.rp-alert-btns) {
     width: 100%;
