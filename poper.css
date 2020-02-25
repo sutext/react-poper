@@ -38,13 +38,13 @@
     overflow: hidden;
     width: 270px;
     background-color: white;
-    transition: scale 0.25s cubic-bezier(0.76, 2.07, 0.63, 0.68);
+    transition: all 0.25s cubic-bezier(0.76, 2.07, 0.63, 0.68);
     color: #333;
 }
 :global(.rp-alert-title) {
     font-size: 17px;
     color: black;
-    line-height: 40px;
+    line-height: 35px;
     min-width: 30px;
     width: 100%;
     padding: 0 15px;
@@ -58,6 +58,7 @@
     font-size: 15px;
     text-align: center;
     color: #555;
+    margin-top: 5px;
     line-height: 20px;
     width: 100%;
     padding: 0 15px;
