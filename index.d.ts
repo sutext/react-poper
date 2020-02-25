@@ -88,6 +88,11 @@ export declare abstract class Modal<P extends ModalProps = ModalProps, S = React
 export class Wait extends Modal<WaitProps> {
     static defaultProps: Partial<WaitProps>;
 }
+/**
+ * @description default Alert Modal implement
+ * @notice implement by cubic-bezier function
+ * transition: scale 0.25s cubic-bezier(0.76, 2.07, 0.63, 0.68);
+ */
 export class Alert extends Modal<AlertProps> {
     static defaultProps: Partial<AlertProps>;
 }

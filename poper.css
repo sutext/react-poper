@@ -14,14 +14,15 @@
     opacity: 1;
 }
 :global(.rp-modal-mask) {
-    position: absolute;
     top: 0px;
     left: 0px;
+    opacity: 1;
     width: 100%;
     height: 100%;
+    z-index: -9999;
+    position: absolute;
     transition: all 0.3s linear 0s;
     background-color: rgba(0, 0, 0, 0.4);
-    opacity: 1;
 }
 :global(.rp-box-all) {
     display: flex;
@@ -37,7 +38,7 @@
     overflow: hidden;
     width: 270px;
     background-color: white;
-    transition: all 0.25s cubic-bezier(0.76, 2.07, 0.63, 0.68);
+    transition: scale 0.25s cubic-bezier(0.76, 2.07, 0.63, 0.68);
     color: #333;
 }
 :global(.rp-alert-title) {
@@ -156,10 +157,11 @@
 }
 @keyframes rp-wait-icon-fade {
     0%,
-    39%,
+    29%,
     100% {
         opacity: 0.2;
     }
+    30%,
     40% {
         opacity: 1;
     }
