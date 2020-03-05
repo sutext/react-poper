@@ -1,4 +1,6 @@
 :global(.rp-entry-root) {
+    position: fixed;
+    z-index: 99999;
     transition: opacity 0.3s linear 0s;
 }
 :global(.rp-modal-root) {
