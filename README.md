@@ -5,6 +5,7 @@
 -   A simple React Component modal popup solution.
 -   Class Poper will create A global Component mount point.
 -   Usually you may export a global handler like this export const pop = new Poper();
+-   If css Module opened, please ignore poper.css
 
 ## usage
 
