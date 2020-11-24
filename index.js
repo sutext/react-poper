@@ -1,20 +1,20 @@
 'use strict';
 var __extends =
     (this && this.__extends) ||
-    (function() {
-        var extendStatics = function(d, b) {
+    (function () {
+        var extendStatics = function (d, b) {
             extendStatics =
                 Object.setPrototypeOf ||
                 ({ __proto__: [] } instanceof Array &&
-                    function(d, b) {
+                    function (d, b) {
                         d.__proto__ = b;
                     }) ||
-                function(d, b) {
+                function (d, b) {
                     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
                 };
             return extendStatics(d, b);
         };
-        return function(d, b) {
+        return function (d, b) {
             extendStatics(d, b);
             function __() {
                 this.constructor = d;
@@ -24,10 +24,10 @@ var __extends =
     })();
 var __assign =
     (this && this.__assign) ||
-    function() {
+    function () {
         __assign =
             Object.assign ||
-            function(t) {
+            function (t) {
                 for (var s, i = 1, n = arguments.length; i < n; i++) {
                     s = arguments[i];
                     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
@@ -38,7 +38,7 @@ var __assign =
     };
 var __importDefault =
     (this && this.__importDefault) ||
-    function(mod) {
+    function (mod) {
         return mod && mod.__esModule ? mod : { default: mod };
     };
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -49,22 +49,22 @@ if (!react_1 || !react_dom_1) {
     throw new Error('react-poper must can only work in react project');
 }
 var Context = react_1.default.createContext({});
-var Modal = (function(_super) {
+var Modal = (function (_super) {
     __extends(Modal, _super);
     function Modal() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
-        _this.dismiss = function(finish) {
+        _this.dismiss = function (finish) {
             if (typeof _this.props.index === 'number') {
                 _this.context.pop && _this.context.pop.dismiss(_this.props.index, finish);
             }
         };
         return _this;
     }
-    Modal.prototype.modalWillShow = function() {};
-    Modal.prototype.modalWillHide = function() {};
-    Modal.prototype.modalDidShow = function() {};
-    Modal.prototype.modalDidHide = function() {};
-    Modal.prototype.modalTapMask = function() {
+    Modal.prototype.modalWillShow = function () {};
+    Modal.prototype.modalWillHide = function () {};
+    Modal.prototype.modalDidShow = function () {};
+    Modal.prototype.modalDidHide = function () {};
+    Modal.prototype.modalTapMask = function () {
         this.dismiss();
     };
     Modal.masktap = false;
@@ -75,17 +75,17 @@ var Modal = (function(_super) {
     return Modal;
 })(react_1.default.Component);
 exports.Modal = Modal;
-var Alert = /** @class */ (function(_super) {
+var Alert = /** @class */ (function (_super) {
     __extends(Alert, _super);
     function Alert() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
         _this.state = { scale: 0 };
         return _this;
     }
-    Alert.prototype.modalWillShow = function() {
+    Alert.prototype.modalWillShow = function () {
         this.setState({ scale: 1 });
     };
-    Alert.prototype.render = function() {
+    Alert.prototype.render = function () {
         var _this = this;
         var scale = this.state.scale;
         var confirmText = 'Confirm';
@@ -113,7 +113,7 @@ var Alert = /** @class */ (function(_super) {
                     key: '1',
                     className: 'rp-alert-btn',
                     style: { color: theme || '#fea310' },
-                    onClick: function() {
+                    onClick: function () {
                         _this.dismiss(confirmBlock);
                     },
                 },
@@ -137,7 +137,7 @@ var Alert = /** @class */ (function(_super) {
                     {
                         key: '2',
                         className: 'rp-alert-btn rp-alert-cancel',
-                        onClick: function() {
+                        onClick: function () {
                             _this.dismiss(cancelBlock);
                         },
                     },
@@ -157,18 +157,18 @@ var Alert = /** @class */ (function(_super) {
 })(Modal);
 Alert.defaultProps = { priority: 1000, theme: '#fea310' };
 exports.Alert = Alert;
-var Remind = /** @class */ (function(_super) {
+var Remind = /** @class */ (function (_super) {
     __extends(Remind, _super);
     function Remind() {
         return (_super !== null && _super.apply(this, arguments)) || this;
     }
-    Remind.prototype.modalDidShow = function() {
+    Remind.prototype.modalDidShow = function () {
         var _this = this;
-        setTimeout(function() {
+        setTimeout(function () {
             return _this.dismiss();
         }, (this.props.duration || 1) * 1000);
     };
-    Remind.prototype.render = function() {
+    Remind.prototype.render = function () {
         return react_1.default.createElement('div', { className: 'rp-box-all rp-box-remind' }, this.props.message);
     };
     Remind.dimming = 0;
@@ -176,25 +176,25 @@ var Remind = /** @class */ (function(_super) {
 })(Modal);
 Remind.defaultProps = { priority: 1001, duration: 1 };
 exports.Remind = Remind;
-var Wait = /** @class */ (function(_super) {
+var Wait = /** @class */ (function (_super) {
     __extends(Wait, _super);
     function Wait() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
         _this.canCancel = false;
         return _this;
     }
-    Wait.prototype.modalDidShow = function() {
+    Wait.prototype.modalDidShow = function () {
         var _this = this;
-        setTimeout(function() {
+        setTimeout(function () {
             return (_this.canCancel = true);
         }, (this.props.timeout || 20) * 1000);
     };
-    Wait.prototype.modalTapMask = function() {
+    Wait.prototype.modalTapMask = function () {
         if (this.canCancel) {
             this.dismiss();
         }
     };
-    Wait.prototype.render = function() {
+    Wait.prototype.render = function () {
         var items = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
         var theme = this.props.theme || 'dark';
         return react_1.default.createElement(
@@ -203,7 +203,7 @@ var Wait = /** @class */ (function(_super) {
             react_1.default.createElement(
                 'div',
                 { className: 'rp-wait-icon' },
-                items.map(function(i) {
+                items.map(function (i) {
                     return react_1.default.createElement('div', { key: i, className: 'rp-wait-icon-item', style: { '--idx': i } });
                 }),
             ),
@@ -216,7 +216,7 @@ var Wait = /** @class */ (function(_super) {
 })(Modal);
 Wait.defaultProps = { priority: 1002, timeout: 20 };
 exports.Wait = Wait;
-var Container = /** @class */ (function(_super) {
+var Container = /** @class */ (function (_super) {
     __extends(Container, _super);
     function Container() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
@@ -224,18 +224,18 @@ var Container = /** @class */ (function(_super) {
         return _this;
     }
     Object.defineProperty(Container.prototype, 'count', {
-        get: function() {
-            return this.state.modals.filter(function(ele) {
+        get: function () {
+            return this.state.modals.filter(function (ele) {
                 return !ele.removed;
             }).length;
         },
         enumerable: true,
         configurable: true,
     });
-    Container.prototype.addModal = function(meta, metaProps, finish) {
+    Container.prototype.addModal = function (meta, metaProps, finish) {
         var _this = this;
         if (meta.onlyone) {
-            var index_1 = this.state.modals.findIndex(function(ele) {
+            var index_1 = this.state.modals.findIndex(function (ele) {
                 return ele.meta === meta && !ele.removed;
             });
             if (index_1 >= 0) {
@@ -246,12 +246,12 @@ var Container = /** @class */ (function(_super) {
         var modals = this.state.modals.concat();
         var index = modals.push({ metaProps: metaProps, meta: meta }) - 1;
         this.setState({ modals: modals });
-        setTimeout(function() {
+        setTimeout(function () {
             var ins = _this.refs[index];
             ins.show().then(finish);
         }, 17);
     };
-    Container.prototype.delModal = function(meta, finish) {
+    Container.prototype.delModal = function (meta, finish) {
         var modals = this.state.modals;
         var promises = [];
         for (var index = modals.length - 1; index >= 0; index--) {
@@ -268,28 +268,28 @@ var Container = /** @class */ (function(_super) {
             finish();
         }
     };
-    Container.prototype.delIndex = function(index, finish) {
+    Container.prototype.delIndex = function (index, finish) {
         var _this = this;
         var ins = this.refs[index + ''];
         if (ins) {
-            _this.state.modals[index].removed = true;
+            var modal = _this.state.modals[index];
+            modal.removed = true;
             ins.hide().then(finish);
         } else {
             finish();
         }
-        finish();
     };
-    Container.prototype.clear = function(finish) {
+    Container.prototype.clear = function (finish) {
         this.setState({ modals: [] }, finish);
     };
-    Container.prototype.render = function() {
-        return this.state.modals.map(function(prop, idx) {
+    Container.prototype.render = function () {
+        return this.state.modals.map(function (prop, idx) {
             return react_1.default.createElement(Wrapper, __assign({ ref: idx + '', key: idx }, prop, { index: idx }));
         });
     };
     return Container;
 })(react_1.default.Component);
-var Wrapper = /** @class */ (function(_super) {
+var Wrapper = /** @class */ (function (_super) {
     __extends(Wrapper, _super);
     function Wrapper() {
         var _this = (_super !== null && _super.apply(this, arguments)) || this;
@@ -297,16 +297,16 @@ var Wrapper = /** @class */ (function(_super) {
         _this.modal = null;
         return _this;
     }
-    Wrapper.prototype.hide = function() {
+    Wrapper.prototype.hide = function () {
         var _this = this;
-        return new Promise(function(reslove) {
+        return new Promise(function (reslove) {
             if (_this.state.removed || !_this.state.display) {
                 reslove();
                 return;
             }
             _this.modal && _this.modal.modalWillHide && _this.modal.modalWillHide();
             _this.setState({ display: false });
-            setTimeout(function() {
+            setTimeout(function () {
                 if (_this.modal) {
                     if (_this.modal.props.onhide) {
                         _this.modal.props.onhide();
@@ -319,16 +319,16 @@ var Wrapper = /** @class */ (function(_super) {
             }, _this.context.pop.fadedur * 1000);
         });
     };
-    Wrapper.prototype.show = function() {
+    Wrapper.prototype.show = function () {
         var _this = this;
-        return new Promise(function(reslove) {
+        return new Promise(function (reslove) {
             if (_this.state.removed || _this.state.display) {
                 reslove();
                 return;
             }
             _this.setState({ display: true });
             _this.modal && _this.modal.modalWillShow && _this.modal.modalWillShow();
-            setTimeout(function() {
+            setTimeout(function () {
                 if (_this.modal) {
                     if (_this.modal.props.onshow) {
                         _this.modal.props.onshow();
@@ -339,12 +339,12 @@ var Wrapper = /** @class */ (function(_super) {
             }, _this.context.pop.fadedur * 1000);
         });
     };
-    Wrapper.prototype.onClick = function() {
+    Wrapper.prototype.onClick = function () {
         if (this.props.meta.masktap) {
             this.modal && this.modal.modalTapMask && this.modal.modalTapMask();
         }
     };
-    Wrapper.prototype.render = function() {
+    Wrapper.prototype.render = function () {
         if (this.state.removed) {
             return react_1.default.createElement('div', { style: { display: 'none' } });
         }
@@ -381,7 +381,7 @@ var Wrapper = /** @class */ (function(_super) {
             react_1.default.createElement('div', {
                 style: bgstyle,
                 className: 'rp-modal-mask',
-                onClick: function(e) {
+                onClick: function (e) {
                     _this.onClick(e);
                 },
             }),
@@ -389,7 +389,7 @@ var Wrapper = /** @class */ (function(_super) {
                 Meta,
                 __assign({}, props, {
                     index: this.props.index,
-                    ref: function(ins) {
+                    ref: function (ins) {
                         _this.modal = ins;
                     },
                 }),
@@ -399,7 +399,7 @@ var Wrapper = /** @class */ (function(_super) {
     Wrapper.contextType = Context;
     return Wrapper;
 })(react_1.default.Component);
-var Poper = /** @class */ (function() {
+var Poper = /** @class */ (function () {
     function Poper(config) {
         var _this = this;
         this.opqueue = [];
@@ -419,12 +419,12 @@ var Poper = /** @class */ (function() {
             this.Alert = Alert;
             this.Remind = Remind;
         }
-        this.dismiss = function(meta, finish) {
+        this.dismiss = function (meta, finish) {
             if (_this.container) {
                 _this.add({ type: 'dismiss', meta: meta, finish: finish });
             }
         };
-        this.remind = function(props) {
+        this.remind = function (props) {
             if (_this.Remind && _this.container && props) {
                 if (typeof props === 'string') {
                     props = { message: props };
@@ -432,7 +432,7 @@ var Poper = /** @class */ (function() {
                 _this.add({ type: 'present', meta: _this.Remind, props: props });
             }
         };
-        this.alert = function(props) {
+        this.alert = function (props) {
             if (_this.Alert && _this.container && props) {
                 if (typeof props === 'string') {
                     props = { message: props };
@@ -440,10 +440,10 @@ var Poper = /** @class */ (function() {
                 _this.add({ type: 'present', meta: _this.Alert, props: props });
             }
         };
-        this.error = function(error) {
+        this.error = function (error) {
             _this.remind((error && error.message) || _this.errmsg);
         };
-        this.wait = function(props) {
+        this.wait = function (props) {
             if (_this.Wait) {
                 if (typeof props === 'string') {
                     props = { message: props };
@@ -451,7 +451,7 @@ var Poper = /** @class */ (function() {
                 _this.add({ type: 'present', meta: _this.Wait, props: props });
             }
         };
-        this.idle = function() {
+        this.idle = function () {
             if (_this.Wait) {
                 _this.add({ type: 'dismiss', meta: _this.Wait });
             }
@@ -466,23 +466,23 @@ var Poper = /** @class */ (function() {
             Context.Provider,
             { value: { pop: this } },
             react_1.default.createElement(Container, {
-                ref: function(ins) {
+                ref: function (ins) {
                     return (_this.container = ins);
                 },
             }),
         );
         react_dom_1.default.render(dom, this.root);
     }
-    Poper.prototype.present = function(meta, props) {
+    Poper.prototype.present = function (meta, props) {
         if (this.container) {
             this.add({ type: 'present', meta: meta, props: props });
         }
     };
-    Poper.prototype.add = function(op) {
+    Poper.prototype.add = function (op) {
         this.opqueue.push(op);
         this.next();
     };
-    Poper.prototype.next = function() {
+    Poper.prototype.next = function () {
         if (this.current) return;
         this.current = this.opqueue.shift();
         if (!this.current) return;
@@ -500,52 +500,62 @@ var Poper = /** @class */ (function() {
                 break;
         }
     };
-    Poper.prototype._present = function(meta, props) {
+    Poper.prototype._present = function (meta, props) {
         var _this = this;
-        this.container.addModal(meta, props, function() {
+        this.container.addModal(meta, props, function () {
             _this.current = undefined;
             _this.next();
         });
     };
-    Poper.prototype._clear = function(finish) {
+    Poper.prototype._clear = function (finish) {
         if (this.root.style.opacity == '0') {
             finish();
             return;
         }
         var _this = this;
         this.root.style.opacity = '0';
-        setTimeout(function() {
-            _this.container.clear(function() {
+        setTimeout(function () {
+            _this.container.clear(function () {
                 _this.root.style.opacity = '1';
                 finish();
             });
         }, this.fadedur * 1000);
     };
-    Poper.prototype._remove = function(meta, finish) {
+    Poper.prototype._remove = function (meta, finish) {
         var _this = this;
-        var block = function() {
+        var block = function () {
             if (finish) {
                 finish();
             }
             _this.current = undefined;
             _this.next();
         };
-        if (_this.container.count < 1) {
+        if (_this.container.count <= 0) {
             block();
-        } else if (_this.container.count == 1) {
-            this._clear(block);
-        } else {
-            switch (typeof meta) {
-                case 'number':
-                    this.container.delIndex(meta, block);
-                    break;
-                case 'function':
-                    this.container.delModal(meta, block);
-                    break;
-                default:
-                    this._clear(block);
-                    break;
-            }
+            return;
+        }
+        switch (typeof meta) {
+            case 'number':
+                _this.container.delIndex(meta, function () {
+                    if (_this.container.count <= 0) {
+                        _this.container.clear(block);
+                    } else {
+                        block();
+                    }
+                });
+                break;
+            case 'function':
+                _this.container.delModal(meta, function () {
+                    if (_this.container.count <= 0) {
+                        _this.container.clear(block);
+                    } else {
+                        block();
+                    }
+                });
+                break;
+            default:
+                _this._clear(block);
+                break;
         }
     };
     return Poper;
